@@ -305,6 +305,9 @@ class Discount {
 
 int main() {
 
+
+    //update pentru source control test
+
     char test[] = { 't' };
     Film f1(test, "test", "test", 0);
     f1.setTitlu("Interstellar");
