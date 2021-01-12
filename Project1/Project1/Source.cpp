@@ -8,16 +8,16 @@ private:
     char* titlu;
     string regizor;
     string tara;
-    int an;
     const char* testChar = "nespecificat";
+    int an;
 
 public:
     // constructor implicit
     Film()
     {
         titlu = nullptr;
-        regizor = " ";
-        tara = " ";
+        regizor = "";
+        tara = "";
         an = 0;
     }
 
@@ -39,7 +39,6 @@ public:
         regizor = f.regizor;
         tara = f.tara;
         an = f.an;
-        delete[] this->titlu;
         if (f.titlu != nullptr) {
             titlu = new char[strlen(f.titlu) + 1];
             for (int i = 0; i < strlen(f.titlu) + 1; i++)
@@ -84,17 +83,18 @@ public:
             return copie;
         }
         else return nullptr;
+        //   return this->titlu;
     }
 
     void setTitlu(const char* titlu) {
-        if (this->titlu != nullptr)
+        if (this->titlu)
             delete[] this->titlu;
-        if (this->titlu != nullptr) {
-            this->titlu = new char[strlen(titlu) + 1];
-            for (int i = 0; i < strlen(titlu) + 1; i++)
-                this->titlu[i] = titlu[i];
-        }
-        else this->titlu = nullptr;
+        //       if (this->titlu != nullptr) {
+        this->titlu = new char[strlen(titlu) + 1];
+        for (int i = 0; i < strlen(titlu) + 1; i++)
+            this->titlu[i] = titlu[i];
+        //     }
+         //    else this->titlu = nullptr;
     }
 
     // getter si setter regizor
@@ -127,6 +127,37 @@ public:
         getline(cin, t);
     }
 
+    /////////////////// overload operatori ///////////////////
+    // << >>
+    friend istream& operator>>(istream&, Film&);
+    friend ostream& operator<<(ostream&, Film);
+    // []
+    char operator[](int i) {
+        if (this->titlu != NULL)
+            if (i >= 0 && i < strlen(this->titlu)) {
+                return titlu[i];
+            }
+    }
+    // cast
+    operator char* () {
+        return this->titlu;
+    }
+    // int + 
+    int operator+(Film& f) {
+        return this->an + f.an;
+    }
+    // ++
+    friend const Film& operator++(Film&);
+    friend const Film operator++(Film&, int);
+    // +
+    friend int operator+(Film&, int);
+    friend int operator+(int, Film&);
+    // !
+    friend bool operator!(Film);
+    // <
+    friend int operator<(Film& f, int x);
+    // ==
+    friend bool operator==(Film f1, Film f2);
 
     //meniu
     void meniu() {
@@ -141,7 +172,162 @@ public:
     }
 };
 
-class Sala {
+// operatorii << si >>
+istream& operator>>(istream& in, Film& f) {
+    cout << "Titlu: ";
+    char titlu[40];
+    in >> titlu;
+    f.setTitlu(titlu);
+    cout << "Regizor: ";
+    in >> f.regizor;
+    cout << "Tara: ";
+    in >> f.tara;
+    cout << "An: ";
+    in >> f.an;
+    return in;
+}
+
+ostream& operator<<(ostream& out, Film f) {
+    out << "Filmul " << f.getTitlu() << ", in regia lui " << f.getRegizor() << ", " << f.getTara() << ", " << f.getAn() << endl;
+    return out;
+}
+
+// post si pre ++
+const Film& operator++(Film& f) {
+    f.an++;
+    return f;
+}
+const Film operator++(Film& f, int i) {
+    Film aux = f;
+    f.an++;
+    return aux;
+}
+// int +
+int operator+(Film& f, int x) {
+    return f.an + x;
+}
+int operator+(int x, Film& f) {
+    return f.an + x;
+}
+// !
+bool operator!(Film f) {
+    return f.an != 2021;
+}
+// <
+int operator<(Film& f, int x) {
+    return f.an < x;
+}
+// ==
+bool operator==(Film f1, Film f2) {
+    return f1.an == f2.an;
+}
+
+// exemplu derivare
+class DesenAnimat : public Film {
+private:
+    string dublajLbRomana;
+public:
+    DesenAnimat() {
+        dublajLbRomana = "Nu";
+    }
+    DesenAnimat(char* titlu, string regizor, string tara, int an, string dublajLbRomana) : Film(titlu, regizor, tara, an) {
+        this->dublajLbRomana = dublajLbRomana;
+    }
+    // getter si setter
+    string getDublaj() {
+        return dublajLbRomana;
+    }
+
+    void setDublaj(string dublaj) {
+        this->dublajLbRomana = dublaj;
+    }
+
+    /////////////////// overload operatori ///////////////////
+    // << >>
+    friend istream& operator>>(istream&, DesenAnimat&);
+    friend ostream& operator<<(ostream&, DesenAnimat);
+    // []
+    char operator[](int i) {
+        if (this->getTitlu() != NULL)
+            if (i >= 0 && i < strlen(this->getTitlu())) {
+                return getTitlu()[i];
+            }
+    }
+    // cast
+    operator char* () {
+        return this->getTitlu();
+    }
+    // int + 
+    int operator+(DesenAnimat& d) {
+        return this->getAn() + d.getAn();
+    }
+    // ++
+    friend const DesenAnimat& operator++(DesenAnimat&);
+    friend const DesenAnimat operator++(DesenAnimat&, int);
+    // +
+    friend int operator+(DesenAnimat&, int);
+    friend int operator+(int, DesenAnimat&);
+    // !
+    friend bool operator!(DesenAnimat);
+    // <
+    friend int operator<(DesenAnimat& d, int x);
+    // ==
+    friend bool operator==(DesenAnimat d1, DesenAnimat d2);
+};
+
+// operatorii << si >>
+istream& operator>>(istream& in, DesenAnimat& d) {
+    cout << "Titlu: ";
+    char titlu[40];
+    in >> titlu;
+    d.setTitlu(titlu);
+    cout << "Regizor: ";
+    in >> d.getRegizor();
+    cout << "Tara: ";
+    in >> d.getTara();
+    cout << "An: ";
+    in >> d.getAn();
+    cout << "Dublaj: ";
+    in >> d.getDublaj();
+    return in;
+}
+
+ostream& operator<<(ostream& out, DesenAnimat d) {
+    out << "Filmul " << d.getTitlu() << ", in regia lui " << d.getRegizor() << ", " << d.getTara() << ", " << d.getAn() << endl;
+    return out;
+}
+
+// post si pre ++
+const DesenAnimat& operator++(DesenAnimat& d) {
+    d.getAn();
+    return d++;
+}
+const DesenAnimat operator++(DesenAnimat& d, int i) {
+    DesenAnimat aux = d;
+    d.getAn();
+    return aux++;
+}
+// int +
+int operator+(DesenAnimat& d, int x) {
+    return d.getAn() + x;
+}
+int operator+(int x, DesenAnimat& d) {
+    return d.getAn() + x;
+}
+// !
+bool operator!(DesenAnimat d) {
+    return d.getAn() != 2021;
+}
+// <
+int operator<(DesenAnimat& d, int x) {
+    return d.getAn() < x;
+}
+// ==
+bool operator==(DesenAnimat d1, DesenAnimat d2) {
+    return d1.getAn() == d2.getAn();
+}
+
+/*class Sala {
 private:
     string sala;
 public:
@@ -150,11 +336,11 @@ public:
     }
     void setSala(string s) {
         this->sala = s;
-    }
+}
     string getSala() {
         return sala;
     }
-};
+};*/
 
 class Program {
 private:
@@ -305,9 +491,6 @@ class Discount {
 
 int main() {
 
-
-    //update pentru source control test
-
     char test[] = { 't' };
     Film f1(test, "test", "test", 0);
     f1.setTitlu("Interstellar");
@@ -319,4 +502,14 @@ int main() {
     cout << f1.getRegizor() << endl;
     cout << f1.getTara() << endl;
     cout << f1.getAn() << endl;
+
+    Film f2;
+    cin >> f2;
+    cout << f2;
+
+    cout << f1[0];
+    DesenAnimat d1;
+    DesenAnimat d2(test, "Anonim", "USA", 2017, "Nu");
+    d2.setTitlu("Frozen");
+    cout << d2.getTitlu() << endl;
 }
