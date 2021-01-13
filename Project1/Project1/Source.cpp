@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <string>
+#include <iomanip>
 using namespace std;
 
 class Film {
@@ -273,9 +274,7 @@ public:
     // ==
     friend bool operator==(DesenAnimat d1, DesenAnimat d2);
 
-};  
-
-
+};
 
 // operatorii << si >>
 istream& operator>>(istream& in, DesenAnimat& d) {
@@ -337,173 +336,170 @@ bool operator==(DesenAnimat d1, DesenAnimat d2) {
     return d1.getAn() == d2.getAn();
 }
 
-/*class Sala {
-private:
-    string sala;
-public:
-    Sala() {
-        this->sala = "";
-    }
-    void setSala(string s) {
-        this->sala = s;
-}
-    string getSala() {
-        return sala;
-    }
-};*/
-
 class Program {
-    string ora;
+private:
+    int h;
+    int m;
+public:
     Program() {
-        ora = "";
+        h = 0;
+        m = 0;
     }
-    Program(string ora) {
-        this->ora = ora;
+    Program(int h, int m) {
+        this->h = h;
+        this->m = m;
+    }
+    int getH() {
+        return h;
+    }
+    void setH(int h) {
+        this->h = h;
+    }
+    int getM() {
+        return m;
+    }
+    void setM(int m) {
+        this->m = m;
+    }
+    // << >>
+    friend istream& operator>>(istream&, Program&);
+    friend ostream& operator<<(ostream&, Program);
+
+    // TO DO [] si cast
+
+    // int + 
+    int operator+(Program& p) {
+        return this->h + p.h;
+    }
+    friend const Program& operator++(Program&);
+    friend const Program operator++(Program&, int);
+    // +
+    friend int operator+(Program&, int);
+    friend int operator+(int, Program&);
+    // !
+    friend bool operator!(Program);
+    // <
+    friend int operator<(Program& p, int x);
+    // ==
+    friend bool operator==(Program p1, Program p2);
+};
+// operatorii << si >>
+istream& operator>>(istream& in, Program& p) {
+    cout << "Introdu ora: ";
+    in >> p.h;
+    while (p.h < 0 || p.h > 23) {
+        cout << "Invalid, incearca din nou: ";
+        in >> p.h;
+    }   
+    cout << "Min: ";
+    in >> p.m;
+    while (p.m < 0 || p.h > 59) {
+        cout << "Invalid, incearca din nou: ";
+        in >> p.m;
+    }
+    return in;
+}
+
+ostream& operator<<(ostream& out, Program p) {
+    out << "Ai introdus ora " << p.getH() << ":" << p.getM() << endl; 
+    //!!!!!!! cumva returneaza si ora inainte de derularea mesajului
+    return out;
+}
+
+// int +
+int operator+(Program& p, int x) {
+    return p.getH() + x;
+}
+int operator+(int x, Program& p) {
+    return p.getH() + x;
+}
+// post si pre ++
+const Program& operator++(Program& p) {
+    p.h++;
+    return p;
+}
+const Program operator++(Program& p, int i) {
+    Program aux = p;
+    p.h++;
+    return aux;
+}
+// !
+bool operator!(Program p) {
+    return p.h > 24;
+}
+// <
+int operator<(Program& p, int x) {
+    return p.h < x;
+}
+// ==
+bool operator==(Program p1, Program p2) {
+    return p1.h == p2.h;
+}
+
+class SalaCinema {
+public:
+    int coloane = 5;
+    int randuri = 22;
+    int totalLocuri = coloane * randuri;
+    int nrSala = 3;
+    int*salaRanduri = new int[nrSala + 1]{ 0,4,8,10 };
+    double* salaPret = new double[nrSala + 1]{ 0,50,15,10 };
+    bool* locuri = new bool[totalLocuri];
+    int* locuriDisponibile = new int[nrSala + 1]{ 0,4 * coloane, 8 * coloane, 10 * coloane };
+// stergere locuri
+    void stergeLocuri() {
+        for (int i = 0; i <= totalLocuri; i++)
+            locuri[i] = false;
+    }
+// afisare locuri disponibile si rezervate
+    void afisareLocuri() {
+        for (int i = 1; i <= totalLocuri; i++) {
+            if (locuri[i])
+                cout << setw(5) << i << ",X" << "\t";
+            else
+                cout << setw(5) << i << ",0" << "\t";
+            if (!(i % coloane)) cout << endl;
+        }
+    }
+// afisare ultimul loc din sala
+    int locSala(int sala) {
+        int sum = 0;
+        for (int i = sala; i >= 0; i--)
+            sum += salaRanduri[i];
+        return sum * coloane;
+    }
+// afisare locuri disponibile/rezervate sala
+    void afisareLocuriSala(int sala) {
+        int from = locSala(sala - 1) + 1;
+        int to = locSala(sala);
+        for (int i = from; i <= to; i++) {
+            if (locuri[i])
+                cout << setw(5) << i << ",X" << "\t";
+            else
+                cout << setw(5) << i << ",0" << "\t";
+            if (!(i % coloane)) cout << endl;
+        }
+    }
+// rezervare loc -> true daca e valida, false daca locul e deja rezervat
+    bool rezervareLoc(int nrLoc, int sala) {
+        if (!locuri[nrLoc] && nrLoc > locSala(sala - 1) && nrLoc <= locSala(sala)) {
+            locuri[nrLoc] = true;
+            locuriDisponibile[sala]--;
+            return true;
+        }
+        return false;
+    }
+// anulare rezervare loc -> true daca e valida, false daca locul nu este rezervat sau nu se afla in sala
+    bool anulareLoc(int nrLoc, int sala) {
+        if (!locuri[nrLoc] && nrLoc > locSala(sala - 1) && nrLoc <= locSala(sala)) {
+            locuri[nrLoc] = false;
+            locuriDisponibile[sala]++;
+            return true;
+        }
+        return false;
     }
 };
 
-
-/*class Program {
-private:
-    string oraFilm;
-public:
-    Program() {
-        this->oraFilm = "";
-    }
-    void setOraFilm(string of) {
-        this->oraFilm = of;
-    }
-    string getOraFilm() {
-        return oraFilm;
-    }
-    void program1() {
-        cout << "1. 16:00" << endl;
-    }
-    void program2() {
-        cout << "2. 18:00" << endl;
-    }
-    void program3()
-    {
-        cout << "3. 20:00" << endl;
-    }
-    void program4() {
-        cout << "4. 22:00" << endl;
-    }
-
-};*/
-
-class Bilet {
-private:
-    double pret;
-    int id;
-    int numar;
-    int locuriDisponibile;
-public:
-    Film f;
-    Bilet() {
-        this->id = 100000;
-        this->pret = 0.0;
-        this->locuriDisponibile = 100;
-    }
-    void setId(int id) {
-        this->id = id;
-    }
-    int getId() {
-        return id;
-    }
-    void setLoc(int loc) {
-        this->locuriDisponibile = loc;
-    }
-    int getLoc() {
-        return locuriDisponibile;
-    }
-    //   void locuriDisponibile();
-    void setPret(double pret) {
-        this->pret = pret;
-    }
-    double getPret() {
-        return pret;
-    }
-    void setNumar(int numar) {
-        this->numar = numar;
-    }
-    int getNumar() {
-        return numar;
-    }
-
-    void film1() {
-        cout << "Program filme" << endl;
-        //p.program1();
-        cout << "Alege ora: " << endl;
-        int x;
-        cin >> x;
-        switch (x) {
-      //  case 1: cout << "16:00" << endl; p.setOraFilm("16:00"); break;
-      //  case 2: cout << "18:00" << endl; p.setOraFilm("18:00"); break;
-      //  case 3: cout << "20:00" << endl; p.setOraFilm("20:00"); break;
-      //  case 4: cout << "22:00" << endl; p.setOraFilm("22:00"); break;
-        }
-    }
-
-    void film2() {
-        cout << "Program filme" << endl;
-        //p.program1();
-        cout << "Alege ora: " << endl;
-        int x;
-        cin >> x;
-        switch (x) {
-      //  case 1: cout << "16:00" << endl; p.setOraFilm("16:00"); break;
-      //  case 2: cout << "18:00" << endl; p.setOraFilm("18:00"); break;
-      //  case 3: cout << "20:00" << endl; p.setOraFilm("20:00"); break;
-      //  case 4: cout << "22:00" << endl; p.setOraFilm("22:00"); break;
-        }
-    }
-    void film3() {
-        cout << "Program filme" << endl;
-        //p.program1();
-        cout << "Alege ora: " << endl;
-        int x;
-        cin >> x;
-        switch (x) {
-       // case 1: cout << "16:00" << endl; p.setOraFilm("16:00"); break;
-       // case 2: cout << "18:00" << endl; p.setOraFilm("18:00"); break;
-       // case 3: cout << "20:00" << endl; p.setOraFilm("20:00"); break;
-       // case 4: cout << "22:00" << endl; p.setOraFilm("22:00"); break;
-        }
-    }
-    void film4() {
-        cout << "Program filme" << endl;
-        //p.program1();
-        cout << "Alege ora: " << endl;
-        int x;
-        cin >> x;
-        switch (x) {
-       // case 1: cout << "16:00" << endl; p.setOraFilm("16:00"); break;
-       // case 2: cout << "18:00" << endl; p.setOraFilm("18:00"); break;
-       // case 3: cout << "20:00" << endl; p.setOraFilm("20:00"); break;
-       // case 4: cout << "22:00" << endl; p.setOraFilm("22:00"); break;
-        }
-    }
-
-    void tipBilet() {
-        int x;
-        cout << "1. Pret intreg: 25 lei" << endl;
-        cout << "2. Pret discount angajat: 17 lei" << endl;
-        cout << "3. Pret discount elev/student: 15 lei" << endl;
-        cout << "Alege tipul biletului: " << endl;
-        switch (x) {
-        case 1: setPret(25); break;
-        case 2: setPret(17); break;
-        case 3: setPret(15); break;
-        }
-
-    }
-    void afiseaza();
-    void program();
-    void afisareBileteRezervate();
-    void afisarePret();
-    void numarBilete();
-};
 class Discount {
     void discountAngajat();
     void discountElevStudent();
@@ -511,7 +507,7 @@ class Discount {
 
 int main() {
 
-    char test[] = { 't' };
+ /*   char test[] = { 't' };
     Film f1(test, "test", "test", 0);
     f1.setTitlu("Interstellar");
     f1.setRegizor("Christopher Nolan");
@@ -535,4 +531,76 @@ int main() {
     DesenAnimat d3;
     cin >> d3;
     cout << d3;
+
+    Program p1;
+    cin >> p1;
+    cout << p1;*/
+
+    SalaCinema s;
+    s.stergeLocuri();
+    while (true) {
+        int meniu;
+        cout << "\n Selecteaza o optiune: \n1: Rezervare bilet\n2: Anulare rezervare\n3: Resetare rezervari existente\n4: Afisare sala cinema\n5: Iesire\n\n\n";
+        cout << "\n 6: Setari";
+        cin >> meniu;
+        int sala, loc, nrBilet, anulare = 0;
+        bool esc = false;
+        system("cls"); // clears screen
+        switch (meniu) {
+        case 1: cout << "Alege sala " << endl;
+            cin >> sala;
+            system("cls");
+            s.afisareLocuriSala(sala);
+            cout << "Locuri disponibile: " << s.locuriDisponibile[sala] << endl;
+            cout << "Pret: " << s.salaPret[sala] << endl;
+            cout << "Cate bilete doriti?" << endl;
+            cin >> nrBilet;
+            system("cls");
+            if (nrBilet <= s.locuriDisponibile[sala]) {
+                for (int i = 0; i < nrBilet; i++) {
+                    cout << "Alege locul " << " (" << i + 1 << "/" << nrBilet << ")" << endl;
+                    cin >> loc;
+                    while (!s.rezervareLoc(loc, sala)) {
+                        cout << "Locul este deja rezervat sau invalid. \n Alege alt loc" << endl;
+                        cin >> loc;
+                    }
+                    cout << "Rezervare efectuata! Locul: " << loc << "a fost rezervat" << endl;
+                }
+                cout << fixed << setprecision(2) << "Total cost: " << s.salaPret[sala] * nrBilet << endl;
+            }
+            else cout << "Sala nu mai are locuri disponibile. Revenire la meniul principal" << endl;
+            break;
+
+        case 2: anulare = 0;
+            esc = false;
+            cout << "In ce sala vrei sa anulezi rezervarea?" << endl;
+            cin >> sala;
+            s.afisareLocuriSala(sala);
+            cout << "Cate rezervari doresti sa anulezi?" << endl;
+            cin >> nrBilet;
+            system("cls");
+            for (int i = 0; i < nrBilet; i++) {
+                cout << "Care este locul pe care doresti sa-l anulezi?" << " (" << i + 1 << "/" << nrBilet << ")" << endl;
+                cin >> loc;
+                while (!s.anulareLoc(loc, sala)) {
+                    cout << "Locul ales nu este rezervat ori valid. Alege un loc valid sau tasteaza -1 pentru a reveni la meniul principal" << endl;
+                    cin >> loc;
+                    if (loc == -1) { esc = true; break; }
+                }
+                if (esc) break;
+                cout << "Locul " << loc << "a fost anulat cu succes" << endl;
+                anulare++;
+            }
+            cout << fixed << setprecision(2) << "Suma returnata " << s.salaPret[sala] * anulare << endl;
+            break;
+        case 3: cout << "Resetare in curs\n Sala a fost resetata\n Revenire la meniu principal" << endl;
+            s.stergeLocuri();
+            break;
+        case 4: s.afisareLocuri();
+            break;
+        case 5: return 0;
+        case 6: 
+        }
+
+    }
 }

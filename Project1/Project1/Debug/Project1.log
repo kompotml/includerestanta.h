@@ -1,17 +1,12 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(491,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Project1.vcxproj).  This can lead to incorrect clean and rebuild behavior.
   Source.cpp
-C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(31,31): warning C4018: '<': signed/unsigned mismatch
-C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(44,31): warning C4018: '<': signed/unsigned mismatch
-C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(63,31): warning C4018: '<': signed/unsigned mismatch
-C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(81,31): warning C4018: '<': signed/unsigned mismatch
-C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(94,27): warning C4018: '<': signed/unsigned mismatch
-C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(137,29): warning C4018: '<': signed/unsigned mismatch
-C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(251,29): warning C4018: '<': signed/unsigned mismatch
-C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(445,1): warning C4060: switch statement contains no 'case' or 'default' labels
-C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(459,1): warning C4060: switch statement contains no 'case' or 'default' labels
-C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(472,1): warning C4060: switch statement contains no 'case' or 'default' labels
-C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(485,1): warning C4060: switch statement contains no 'case' or 'default' labels
-C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(313): warning C4172: returning address of local variable or temporary
-C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(140): warning C4715: 'Film::operator[]': not all control paths return a value
-C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(319): warning C4717: 'operator++': recursive on all control paths, function will cause runtime stack overflow
+C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(32,31): warning C4018: '<': signed/unsigned mismatch
+C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(45,31): warning C4018: '<': signed/unsigned mismatch
+C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(64,31): warning C4018: '<': signed/unsigned mismatch
+C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(82,31): warning C4018: '<': signed/unsigned mismatch
+C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(95,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(138,29): warning C4018: '<': signed/unsigned mismatch
+C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(252,29): warning C4018: '<': signed/unsigned mismatch
+C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(312): warning C4172: returning address of local variable or temporary
+C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(318): warning C4717: 'operator++': recursive on all control paths, function will cause runtime stack overflow
   Project1.vcxproj -> C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Debug\Proiect POO.exe
