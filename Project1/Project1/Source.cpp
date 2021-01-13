@@ -241,9 +241,8 @@ public:
     void setDublaj(string dublaj) {
         this->dublajLbRomana = dublaj;
     }
-
     /////////////////// overload operatori ///////////////////
-    // << >>
+   // << >>
     friend istream& operator>>(istream&, DesenAnimat&);
     friend ostream& operator<<(ostream&, DesenAnimat);
     // []
@@ -273,7 +272,10 @@ public:
     friend int operator<(DesenAnimat& d, int x);
     // ==
     friend bool operator==(DesenAnimat d1, DesenAnimat d2);
-};
+
+};  
+
+
 
 // operatorii << si >>
 istream& operator>>(istream& in, DesenAnimat& d) {
@@ -282,13 +284,21 @@ istream& operator>>(istream& in, DesenAnimat& d) {
     in >> titlu;
     d.setTitlu(titlu);
     cout << "Regizor: ";
-    in >> d.getRegizor();
+    string regizor;
+    in >> regizor;
+    d.setRegizor(regizor);
     cout << "Tara: ";
-    in >> d.getTara();
+    string tara;
+    in >> tara;
+    d.setTara(tara);
     cout << "An: ";
-    in >> d.getAn();
+    int an;
+    in >> an;
+    d.setAn(an);
     cout << "Dublaj: ";
-    in >> d.getDublaj();
+    string dublaj;
+    in >> dublaj;
+    d.setDublaj(dublaj);
     return in;
 }
 
@@ -343,6 +353,17 @@ public:
 };*/
 
 class Program {
+    string ora;
+    Program() {
+        ora = "";
+    }
+    Program(string ora) {
+        this->ora = ora;
+    }
+};
+
+
+/*class Program {
 private:
     string oraFilm;
 public:
@@ -369,7 +390,7 @@ public:
         cout << "4. 22:00" << endl;
     }
 
-};
+};*/
 
 class Bilet {
 private:
@@ -378,7 +399,6 @@ private:
     int numar;
     int locuriDisponibile;
 public:
-    Program p;
     Film f;
     Bilet() {
         this->id = 100000;
@@ -413,55 +433,55 @@ public:
 
     void film1() {
         cout << "Program filme" << endl;
-        p.program1();
+        //p.program1();
         cout << "Alege ora: " << endl;
         int x;
         cin >> x;
         switch (x) {
-        case 1: cout << "16:00" << endl; p.setOraFilm("16:00"); break;
-        case 2: cout << "18:00" << endl; p.setOraFilm("18:00"); break;
-        case 3: cout << "20:00" << endl; p.setOraFilm("20:00"); break;
-        case 4: cout << "22:00" << endl; p.setOraFilm("22:00"); break;
+      //  case 1: cout << "16:00" << endl; p.setOraFilm("16:00"); break;
+      //  case 2: cout << "18:00" << endl; p.setOraFilm("18:00"); break;
+      //  case 3: cout << "20:00" << endl; p.setOraFilm("20:00"); break;
+      //  case 4: cout << "22:00" << endl; p.setOraFilm("22:00"); break;
         }
     }
 
     void film2() {
         cout << "Program filme" << endl;
-        p.program1();
+        //p.program1();
         cout << "Alege ora: " << endl;
         int x;
         cin >> x;
         switch (x) {
-        case 1: cout << "16:00" << endl; p.setOraFilm("16:00"); break;
-        case 2: cout << "18:00" << endl; p.setOraFilm("18:00"); break;
-        case 3: cout << "20:00" << endl; p.setOraFilm("20:00"); break;
-        case 4: cout << "22:00" << endl; p.setOraFilm("22:00"); break;
+      //  case 1: cout << "16:00" << endl; p.setOraFilm("16:00"); break;
+      //  case 2: cout << "18:00" << endl; p.setOraFilm("18:00"); break;
+      //  case 3: cout << "20:00" << endl; p.setOraFilm("20:00"); break;
+      //  case 4: cout << "22:00" << endl; p.setOraFilm("22:00"); break;
         }
     }
     void film3() {
         cout << "Program filme" << endl;
-        p.program1();
+        //p.program1();
         cout << "Alege ora: " << endl;
         int x;
         cin >> x;
         switch (x) {
-        case 1: cout << "16:00" << endl; p.setOraFilm("16:00"); break;
-        case 2: cout << "18:00" << endl; p.setOraFilm("18:00"); break;
-        case 3: cout << "20:00" << endl; p.setOraFilm("20:00"); break;
-        case 4: cout << "22:00" << endl; p.setOraFilm("22:00"); break;
+       // case 1: cout << "16:00" << endl; p.setOraFilm("16:00"); break;
+       // case 2: cout << "18:00" << endl; p.setOraFilm("18:00"); break;
+       // case 3: cout << "20:00" << endl; p.setOraFilm("20:00"); break;
+       // case 4: cout << "22:00" << endl; p.setOraFilm("22:00"); break;
         }
     }
     void film4() {
         cout << "Program filme" << endl;
-        p.program1();
+        //p.program1();
         cout << "Alege ora: " << endl;
         int x;
         cin >> x;
         switch (x) {
-        case 1: cout << "16:00" << endl; p.setOraFilm("16:00"); break;
-        case 2: cout << "18:00" << endl; p.setOraFilm("18:00"); break;
-        case 3: cout << "20:00" << endl; p.setOraFilm("20:00"); break;
-        case 4: cout << "22:00" << endl; p.setOraFilm("22:00"); break;
+       // case 1: cout << "16:00" << endl; p.setOraFilm("16:00"); break;
+       // case 2: cout << "18:00" << endl; p.setOraFilm("18:00"); break;
+       // case 3: cout << "20:00" << endl; p.setOraFilm("20:00"); break;
+       // case 4: cout << "22:00" << endl; p.setOraFilm("22:00"); break;
         }
     }
 
@@ -512,4 +532,7 @@ int main() {
     DesenAnimat d2(test, "Anonim", "USA", 2017, "Nu");
     d2.setTitlu("Frozen");
     cout << d2.getTitlu() << endl;
+    DesenAnimat d3;
+    cin >> d3;
+    cout << d3;
 }
