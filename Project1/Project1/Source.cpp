@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <iostream>
+#include <fstream>
 #include <string>
-#include <iomanip>
 using namespace std;
 
 class Film {
@@ -402,7 +402,6 @@ istream& operator>>(istream& in, Program& p) {
 
 ostream& operator<<(ostream& out, Program p) {
     out << "Ai introdus ora " << p.getH() << ":" << p.getM() << endl; 
-    //!!!!!!! cumva returneaza si ora inainte de derularea mesajului
     return out;
 }
 
@@ -436,69 +435,83 @@ bool operator==(Program p1, Program p2) {
     return p1.h == p2.h;
 }
 
-class SalaCinema {
-public:
-    int coloane = 5;
-    int randuri = 22;
-    int totalLocuri = coloane * randuri;
-    int nrSala = 3;
-    int*salaRanduri = new int[nrSala + 1]{ 0,4,8,10 };
-    double* salaPret = new double[nrSala + 1]{ 0,50,15,10 };
-    bool* locuri = new bool[totalLocuri];
-    int* locuriDisponibile = new int[nrSala + 1]{ 0,4 * coloane, 8 * coloane, 10 * coloane };
-// stergere locuri
-    void stergeLocuri() {
-        for (int i = 0; i <= totalLocuri; i++)
-            locuri[i] = false;
+class Bilet {
+public: 
+    int nrBilet, d, m, y, nrRezervare, nrSala, H, M, ora, pers;
+    float pret;
+    char titluFilm[20];
+    Bilet() {
+        nrBilet = 0;
     }
-// afisare locuri disponibile si rezervate
-    void afisareLocuri() {
-        for (int i = 1; i <= totalLocuri; i++) {
-            if (locuri[i])
-                cout << setw(5) << i << ",X" << "\t";
-            else
-                cout << setw(5) << i << ",0" << "\t";
-            if (!(i % coloane)) cout << endl;
+    void getDate() {
+        t.nrBilet++;
+        cout << "Introdu numele filmului " << endl;
+        cin >> t.titluFilm;
+        cout << "Introdu pretul filmului " << endl;
+        cin >> t.pret;
+        cout << "Introdu data: dd mm yyyy " << endl;
+        cin >> t.d >> t.m >> t.y;
+        cout << "Introdu numarul rezervarii " << endl;
+        cin >> t.nrRezervare;
+        cout << "Introdu numarul salii " << endl;
+        cin >> t.nrSala;
+        cout << "Introdu ora/ minutul " << endl;
+        cin >> t.H >> t.M;
+        cout << "Introdu numarul de persoane " << endl;
+        cin >> t.pers;
+
+        salveazaDate();
+    }
+    void salveazaDate() {
+        fstream fout;
+        fout.open("file", ios::app);
+        fout.write((char*)&t, sizeof(t));
+        fout.close();
+    }
+    void citesteDate() {
+        cout << "Afiseaza  toate biletele: \n" << endl;
+        ifstream fin;
+        fin.open("file", ios::in);
+        while (fin.read((char*)&t, sizeof(t)))
+            afiseazaDate();
+        fin.close();
+    }
+    void afiseazaDate() {
+        cout << "Nr bilet: " << nrBilet << endl;
+        cout << "Ttitlu: " << titluFilm << endl;
+        cout << "Pret bilet " << pret << endl;
+        cout << "Nr persoane: " << pers << endl;
+        cout << "Nr sala: " << nrSala << endl;
+        cout << "Ora: " << ora << endl;
+        cout << "Data: " << d << m << endl;
+
+    }
+    void getNrBilet() {
+        ifstream fin;
+        fin.open("file", ios::in);
+        while(fin.read((char*)&t, sizeof(t))){}
+        fin.close();
+    }
+    void validareBilet() {
+        int nr, found = 0;
+        cout << "Introdu nr biletului: " << endl;
+        cin >> nr;
+        ifstream fin;
+        fin.open("file", ios::in);
+        while (fin.read((char*)&t, sizeof(t))) {
+            if (nrBilet == nr) {
+                cout << "Bilet valid: " << endl;
+                found = 1; 
+                afiseazaDate();
+                break;
+            }
         }
+        if (found == 0)
+            cout << "Bilet invalid " << endl;
+        fin.close();
     }
-// afisare ultimul loc din sala
-    int locSala(int sala) {
-        int sum = 0;
-        for (int i = sala; i >= 0; i--)
-            sum += salaRanduri[i];
-        return sum * coloane;
-    }
-// afisare locuri disponibile/rezervate sala
-    void afisareLocuriSala(int sala) {
-        int from = locSala(sala - 1) + 1;
-        int to = locSala(sala);
-        for (int i = from; i <= to; i++) {
-            if (locuri[i])
-                cout << setw(5) << i << ",X" << "\t";
-            else
-                cout << setw(5) << i << ",0" << "\t";
-            if (!(i % coloane)) cout << endl;
-        }
-    }
-// rezervare loc -> true daca e valida, false daca locul e deja rezervat
-    bool rezervareLoc(int nrLoc, int sala) {
-        if (!locuri[nrLoc] && nrLoc > locSala(sala - 1) && nrLoc <= locSala(sala)) {
-            locuri[nrLoc] = true;
-            locuriDisponibile[sala]--;
-            return true;
-        }
-        return false;
-    }
-// anulare rezervare loc -> true daca e valida, false daca locul nu este rezervat sau nu se afla in sala
-    bool anulareLoc(int nrLoc, int sala) {
-        if (!locuri[nrLoc] && nrLoc > locSala(sala - 1) && nrLoc <= locSala(sala)) {
-            locuri[nrLoc] = false;
-            locuriDisponibile[sala]++;
-            return true;
-        }
-        return false;
-    }
-};
+}t;
+
 
 class Discount {
     void discountAngajat();
@@ -507,100 +520,51 @@ class Discount {
 
 int main() {
 
- /*   char test[] = { 't' };
-    Film f1(test, "test", "test", 0);
-    f1.setTitlu("Interstellar");
-    f1.setRegizor("Christopher Nolan");
-    f1.setTara("UK");
-    f1.setAn(2014);
+    /*   char test[] = { 't' };
+       Film f1(test, "test", "test", 0);
+       f1.setTitlu("Interstellar");
+       f1.setRegizor("Christopher Nolan");
+       f1.setTara("UK");
+       f1.setAn(2014);
 
-    cout << f1.getTitlu() << endl;
-    cout << f1.getRegizor() << endl;
-    cout << f1.getTara() << endl;
-    cout << f1.getAn() << endl;
+       cout << f1.getTitlu() << endl;
+       cout << f1.getRegizor() << endl;
+       cout << f1.getTara() << endl;
+       cout << f1.getAn() << endl;
 
-    Film f2;
-    cin >> f2;
-    cout << f2;
+       Film f2;
+       cin >> f2;
+       cout << f2;
 
-    cout << f1[0];
-    DesenAnimat d1;
-    DesenAnimat d2(test, "Anonim", "USA", 2017, "Nu");
-    d2.setTitlu("Frozen");
-    cout << d2.getTitlu() << endl;
-    DesenAnimat d3;
-    cin >> d3;
-    cout << d3;
+       cout << f1[0];
+       DesenAnimat d1;
+       DesenAnimat d2(test, "Anonim", "USA", 2017, "Nu");
+       d2.setTitlu("Frozen");
+       cout << d2.getTitlu() << endl;
+       DesenAnimat d3;
+       cin >> d3;
+       cout << d3;
 
-    Program p1;
-    cin >> p1;
-    cout << p1;*/
-
-    SalaCinema s;
-    s.stergeLocuri();
-    while (true) {
-        int meniu;
-        cout << "\n Selecteaza o optiune: \n1: Rezervare bilet\n2: Anulare rezervare\n3: Resetare rezervari existente\n4: Afisare sala cinema\n5: Iesire\n\n\n";
-        cout << "\n 6: Setari";
-        cin >> meniu;
-        int sala, loc, nrBilet, anulare = 0;
-        bool esc = false;
-        system("cls"); // clears screen
-        switch (meniu) {
-        case 1: cout << "Alege sala " << endl;
-            cin >> sala;
-            system("cls");
-            s.afisareLocuriSala(sala);
-            cout << "Locuri disponibile: " << s.locuriDisponibile[sala] << endl;
-            cout << "Pret: " << s.salaPret[sala] << endl;
-            cout << "Cate bilete doriti?" << endl;
-            cin >> nrBilet;
-            system("cls");
-            if (nrBilet <= s.locuriDisponibile[sala]) {
-                for (int i = 0; i < nrBilet; i++) {
-                    cout << "Alege locul " << " (" << i + 1 << "/" << nrBilet << ")" << endl;
-                    cin >> loc;
-                    while (!s.rezervareLoc(loc, sala)) {
-                        cout << "Locul este deja rezervat sau invalid. \n Alege alt loc" << endl;
-                        cin >> loc;
-                    }
-                    cout << "Rezervare efectuata! Locul: " << loc << "a fost rezervat" << endl;
-                }
-                cout << fixed << setprecision(2) << "Total cost: " << s.salaPret[sala] * nrBilet << endl;
-            }
-            else cout << "Sala nu mai are locuri disponibile. Revenire la meniul principal" << endl;
-            break;
-
-        case 2: anulare = 0;
-            esc = false;
-            cout << "In ce sala vrei sa anulezi rezervarea?" << endl;
-            cin >> sala;
-            s.afisareLocuriSala(sala);
-            cout << "Cate rezervari doresti sa anulezi?" << endl;
-            cin >> nrBilet;
-            system("cls");
-            for (int i = 0; i < nrBilet; i++) {
-                cout << "Care este locul pe care doresti sa-l anulezi?" << " (" << i + 1 << "/" << nrBilet << ")" << endl;
-                cin >> loc;
-                while (!s.anulareLoc(loc, sala)) {
-                    cout << "Locul ales nu este rezervat ori valid. Alege un loc valid sau tasteaza -1 pentru a reveni la meniul principal" << endl;
-                    cin >> loc;
-                    if (loc == -1) { esc = true; break; }
-                }
-                if (esc) break;
-                cout << "Locul " << loc << "a fost anulat cu succes" << endl;
-                anulare++;
-            }
-            cout << fixed << setprecision(2) << "Suma returnata " << s.salaPret[sala] * anulare << endl;
-            break;
-        case 3: cout << "Resetare in curs\n Sala a fost resetata\n Revenire la meniu principal" << endl;
-            s.stergeLocuri();
-            break;
-        case 4: s.afisareLocuri();
-            break;
-        case 5: return 0;
-        case 6: 
+       Program p1;
+       cin >> p1;
+       cout << p1;*/
+    system("Color E0");
+    int x;
+    t.getNrBilet();
+    do {
+        cout << "1. Rezerva bilet" << endl;
+        cout << "2. Afiseaza bilete rezervate" << endl;
+        cout << "3. Valideaza bilet" << endl;
+        cout << "4. Iesire" << endl;
+        cout << "Alege o optiune: " << endl;
+        cin >> x;
+        switch (x) {
+        case 1: t.getDate(); break;
+        case 2: t.citesteDate(); break;
+        case 3: t.validareBilet(); break;
+        case 4: exit(0); break;
+        default: cout << "\n Optiune invalida.\n Alege din nou" << endl;
         }
 
-    }
-}
+    } while (x != 4);
+ }
