@@ -13,6 +13,7 @@ private:
     int an;
 
 public:
+    int nrFilm;
     // constructor implicit
     Film()
     {
@@ -122,16 +123,69 @@ public:
         this->an = an;
     }
 
-    void adaugaFilm() {
-        string t, r, c, a;
-        cout << "Numele filmului: ";
-        getline(cin, t);
+    // introducere, salvare si afisare filme in consola
+    void getDate() {
+        f.nrFilm++;
+        cout << "Introdu titlul filmului: " << endl;
+        cin >> f.titlu;
+         cout << "Regizor: " << endl; 
+         cin >> f.regizor;
+         cout << "tara: " << endl;
+         cin >> f.tara;
+         cout << "An: " << endl;
+         cin >> f.an;
+
+        salvareDate();
+    }
+    void salvareDate() {
+        fstream fout;
+        fout.open("filme", ios::app);
+        fout.write((char*)&f, sizeof(f));
+        fout.close();
+    }
+    void citireDate() {
+        cout << "Afiseaza toate filmele existente: \n" << endl;
+        ifstream fin;
+        fin.open("filme", ios::in);
+        while (fin.read((char*)&f, sizeof(f)))
+            afisareDate();
+        fin.close();
+    }
+    void afisareDate() {
+        cout << "Titlu: " << titlu << endl;
+        cout << "Regizor: " << regizor << endl;
+        cout << "Tara: " << tara << endl;
+        cout << "An: " << an << endl;
+    }
+    void getNrFilm() {
+        ifstream fin;
+        fin.open("filme", ios::in);
+        while (fin.read((char*)&f, sizeof(f))) {}
+        fin.close();
+    }
+    void validareFilm() {
+        int nr, found = 0;
+        cout << "Introdu nr filmului: " << endl;
+        cin >> nr;
+        ifstream fin;
+        fin.open("filme", ios::in);
+        while (fin.read((char*)&f, sizeof(f))) {
+            if (nrFilm == nr) {
+                cout << "Film valid: " << endl;
+                found = 1;
+                afisareDate();
+                break;
+            }
+        }
+        if (found == 0) cout << "Film invalid" << endl;
+        fin.close();
     }
 
     /////////////////// overload operatori ///////////////////
     // << >>
-    friend istream& operator>>(istream&, Film&);
-    friend ostream& operator<<(ostream&, Film);
+    friend istream& operator>>(istream&, Film&); 
+    friend ostream& operator<<(ostream&, Film); 
+   
     // []
     char operator[](int i) {
         if (this->titlu != NULL)
@@ -160,31 +214,27 @@ public:
     // ==
     friend bool operator==(Film f1, Film f2);
 
-    //meniu
-    void meniu() {
-        cout << "\t\t" << endl;
-        cout << "\t\tSelecteaza o optiune" << endl;
-        cout << "\t\t 1 Rezervare bilet" << endl;
-        cout << "\t\t 2 Adaugare film" << endl;
-        cout << "\t\t 3 Adaugare sala" << endl;
-        cout << "\t\t 4 Adaugare program" << endl;
-        cout << "\t\t 5 Raport locuri libere" << endl;
-        cout << "\t\t 6 Raport filme existente" << endl;
-    }
-};
+   
+}f;
 
 // operatorii << si >>
 istream& operator>>(istream& in, Film& f) {
     cout << "Titlu: ";
-    char titlu[40];
-    in >> titlu;
+    char titlu[40]; //variabila temporara in care citim titlul de la tastatura
+    in.getline(titlu, 40); // citire cu spatii libere
     f.setTitlu(titlu);
     cout << "Regizor: ";
-    in >> f.regizor;
+    string regizor;
+    in >> regizor;
+    f.setRegizor(regizor);
     cout << "Tara: ";
-    in >> f.tara;
+    string tara; 
+    in >>tara; 
+    f.setTara(tara);
     cout << "An: ";
-    in >> f.an;
+    int an; 
+    in >> an;
+    f.setAn(an);
     return in;
 }
 
@@ -192,6 +242,9 @@ ostream& operator<<(ostream& out, Film f) {
     out << "Filmul " << f.getTitlu() << ", in regia lui " << f.getRegizor() << ", " << f.getTara() << ", " << f.getAn() << endl;
     return out;
 }
+
+
+
 
 // post si pre ++
 const Film& operator++(Film& f) {
@@ -223,7 +276,7 @@ bool operator==(Film f1, Film f2) {
     return f1.an == f2.an;
 }
 
-// exemplu derivare
+// derivare
 class DesenAnimat : public Film {
 private:
     string dublajLbRomana;
@@ -273,7 +326,6 @@ public:
     friend int operator<(DesenAnimat& d, int x);
     // ==
     friend bool operator==(DesenAnimat d1, DesenAnimat d2);
-
 };
 
 // operatorii << si >>
@@ -302,7 +354,7 @@ istream& operator>>(istream& in, DesenAnimat& d) {
 }
 
 ostream& operator<<(ostream& out, DesenAnimat d) {
-    out << "Filmul " << d.getTitlu() << ", in regia lui " << d.getRegizor() << ", " << d.getTara() << ", " << d.getAn() << endl;
+    out << "Ai adaugat filmul " << d.getTitlu() << ", in regia lui " << d.getRegizor() << ", " << d.getTara() << ", " << d.getAn() << endl;
     return out;
 }
 
@@ -435,82 +487,21 @@ bool operator==(Program p1, Program p2) {
     return p1.h == p2.h;
 }
 
-class Bilet {
+class rezervareBilet {
 public: 
-    int nrBilet, d, m, y, nrRezervare, nrSala, H, M, ora, pers;
-    float pret;
-    char titluFilm[20];
-    Bilet() {
+    int nrBilet;
+   // float pret;
+  //  Film f;
+  //  int sala; // 1 si 2
+  //  int nrLocuri;
+  //  int totalLocuri;
+    rezervareBilet() {
         nrBilet = 0;
     }
-    void getDate() {
-        t.nrBilet++;
-        cout << "Introdu numele filmului " << endl;
-        cin >> t.titluFilm;
-        cout << "Introdu pretul filmului " << endl;
-        cin >> t.pret;
-        cout << "Introdu data: dd mm yyyy " << endl;
-        cin >> t.d >> t.m >> t.y;
-        cout << "Introdu numarul rezervarii " << endl;
-        cin >> t.nrRezervare;
-        cout << "Introdu numarul salii " << endl;
-        cin >> t.nrSala;
-        cout << "Introdu ora/ minutul " << endl;
-        cin >> t.H >> t.M;
-        cout << "Introdu numarul de persoane " << endl;
-        cin >> t.pers;
+    
+};
 
-        salveazaDate();
-    }
-    void salveazaDate() {
-        fstream fout;
-        fout.open("file", ios::app);
-        fout.write((char*)&t, sizeof(t));
-        fout.close();
-    }
-    void citesteDate() {
-        cout << "Afiseaza  toate biletele: \n" << endl;
-        ifstream fin;
-        fin.open("file", ios::in);
-        while (fin.read((char*)&t, sizeof(t)))
-            afiseazaDate();
-        fin.close();
-    }
-    void afiseazaDate() {
-        cout << "Nr bilet: " << nrBilet << endl;
-        cout << "Ttitlu: " << titluFilm << endl;
-        cout << "Pret bilet " << pret << endl;
-        cout << "Nr persoane: " << pers << endl;
-        cout << "Nr sala: " << nrSala << endl;
-        cout << "Ora: " << ora << endl;
-        cout << "Data: " << d << m << endl;
 
-    }
-    void getNrBilet() {
-        ifstream fin;
-        fin.open("file", ios::in);
-        while(fin.read((char*)&t, sizeof(t))){}
-        fin.close();
-    }
-    void validareBilet() {
-        int nr, found = 0;
-        cout << "Introdu nr biletului: " << endl;
-        cin >> nr;
-        ifstream fin;
-        fin.open("file", ios::in);
-        while (fin.read((char*)&t, sizeof(t))) {
-            if (nrBilet == nr) {
-                cout << "Bilet valid: " << endl;
-                found = 1; 
-                afiseazaDate();
-                break;
-            }
-        }
-        if (found == 0)
-            cout << "Bilet invalid " << endl;
-        fin.close();
-    }
-}t;
 
 
 class Discount {
@@ -519,8 +510,8 @@ class Discount {
 };
 
 int main() {
-
-    /*   char test[] = { 't' };
+/*
+       char test[] = { 't' };
        Film f1(test, "test", "test", 0);
        f1.setTitlu("Interstellar");
        f1.setRegizor("Christopher Nolan");
@@ -550,21 +541,33 @@ int main() {
        cout << p1;*/
     system("Color E0");
     int x;
-    t.getNrBilet();
+    f.getNrFilm();
     do {
-        cout << "1. Rezerva bilet" << endl;
-        cout << "2. Afiseaza bilete rezervate" << endl;
-        cout << "3. Valideaza bilet" << endl;
+        cout << "1. Adauga film" << endl; // afisare filme disponibile numerotate
+  //      cout << "2. Situatie locuri libere" << endl; //la fiecare apelare: --locuriLibere ->afiseaza locuri libere
+        cout << "2. Afiseaza filme existente" << endl; 
+        cout << "3. Valideaza film" << endl;
         cout << "4. Iesire" << endl;
         cout << "Alege o optiune: " << endl;
         cin >> x;
         switch (x) {
-        case 1: t.getDate(); break;
-        case 2: t.citesteDate(); break;
-        case 3: t.validareBilet(); break;
+        case 1: f.getDate(); break;
+        case 2: f.citireDate(); break;
+        case 3: f.validareFilm(); break;
         case 4: exit(0); break;
         default: cout << "\n Optiune invalida.\n Alege din nou" << endl;
         }
 
     } while (x != 4);
+ /*   Film f2;
+    cin >> f2;
+    cout << f2;
+    ifstream f;
+    f >> f2;
+    ofstream x;
+    x << f2;
+    // scrierea in txt functioneaza, dar datele se salveaza peste cele existente :(
+    // de facut asta in clasa Bilet, pentru emiterea unui bilet in txt
+    f2.scriereFilmFisier();
+    Film::citireFilmFisier();*/
  }
