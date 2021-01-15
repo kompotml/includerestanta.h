@@ -7,6 +7,11 @@ C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cp
 C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(96,27): warning C4018: '<': signed/unsigned mismatch
 C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(192,29): warning C4018: '<': signed/unsigned mismatch
 C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(305,29): warning C4018: '<': signed/unsigned mismatch
+C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(505,31): warning C4018: '<': signed/unsigned mismatch
+C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(513,31): warning C4018: '<': signed/unsigned mismatch
+C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(539,31): warning C4018: '<': signed/unsigned mismatch
+C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(549,31): warning C4018: '<': signed/unsigned mismatch
+C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(562,27): warning C4018: '<': signed/unsigned mismatch
 C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(364): warning C4172: returning address of local variable or temporary
 C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Project1\Source.cpp(370): warning C4717: 'operator++': recursive on all control paths, function will cause runtime stack overflow
   Project1.vcxproj -> C:\Users\opc\source\repos\kompotml\includerestanta.h\Project1\Debug\Proiect POO.exe

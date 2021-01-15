@@ -128,12 +128,12 @@ public:
         f.nrFilm++;
         cout << "Introdu titlul filmului: " << endl;
         cin >> f.titlu;
-         cout << "Regizor: " << endl; 
-         cin >> f.regizor;
-         cout << "tara: " << endl;
-         cin >> f.tara;
-         cout << "An: " << endl;
-         cin >> f.an;
+        cout << "Regizor: " << endl;
+        cin >> f.regizor;
+        cout << "tara: " << endl;
+        cin >> f.tara;
+        cout << "An: " << endl;
+        cin >> f.an;
 
         salvareDate();
     }
@@ -183,9 +183,9 @@ public:
 
     /////////////////// overload operatori ///////////////////
     // << >>
-    friend istream& operator>>(istream&, Film&); 
-    friend ostream& operator<<(ostream&, Film); 
-   
+    friend istream& operator>>(istream&, Film&);
+    friend ostream& operator<<(ostream&, Film);
+
     // []
     char operator[](int i) {
         if (this->titlu != NULL)
@@ -214,7 +214,7 @@ public:
     // ==
     friend bool operator==(Film f1, Film f2);
 
-   
+
 }f;
 
 // operatorii << si >>
@@ -228,11 +228,11 @@ istream& operator>>(istream& in, Film& f) {
     in >> regizor;
     f.setRegizor(regizor);
     cout << "Tara: ";
-    string tara; 
-    in >>tara; 
+    string tara;
+    in >> tara;
     f.setTara(tara);
     cout << "An: ";
-    int an; 
+    int an;
     in >> an;
     f.setAn(an);
     return in;
@@ -442,7 +442,7 @@ istream& operator>>(istream& in, Program& p) {
     while (p.h < 0 || p.h > 23) {
         cout << "Invalid, incearca din nou: ";
         in >> p.h;
-    }   
+    }
     cout << "Min: ";
     in >> p.m;
     while (p.m < 0 || p.h > 59) {
@@ -453,7 +453,7 @@ istream& operator>>(istream& in, Program& p) {
 }
 
 ostream& operator<<(ostream& out, Program p) {
-    out << "Ai introdus ora " << p.getH() << ":" << p.getM() << endl; 
+    out << "Ai introdus ora " << p.getH() << ":" << p.getM() << endl;
     return out;
 }
 
@@ -487,21 +487,139 @@ bool operator==(Program p1, Program p2) {
     return p1.h == p2.h;
 }
 
-class rezervareBilet {
-public: 
-    int nrBilet;
-   // float pret;
-  //  Film f;
-  //  int sala; // 1 si 2
-  //  int nrLocuri;
-  //  int totalLocuri;
-    rezervareBilet() {
-        nrBilet = 0;
+class Bilet {
+    char* titlu;
+   // const int tipBilet;
+    const char* testChar = "nespecificat";
+    int idBilet;
+
+public:
+    Bilet()  {
+        titlu = NULL;
+        idBilet = 0;
     }
-    
+
+    Bilet(char* tt, int t)   {
+        if (titlu != nullptr) {
+            this->titlu = new char[strlen(testChar) + 1];
+            for (int i = 0; i < strlen(testChar) + 1; i++)
+                this->titlu[i] = testChar[i];
+        }
+    }
+
+    Bilet(const Bilet& b)  {
+        if (b.titlu != nullptr) {
+            titlu = new char[strlen(b.titlu) + 1];
+            for (int i = 0; i < strlen(b.titlu) + 1; i++)
+                titlu[i] = b.titlu[i];
+        }
+        else {
+            titlu = nullptr;
+        }
+        idBilet = b.idBilet;
+    }
+
+    ~Bilet()
+    {
+        if (titlu != NULL)
+        {
+            delete[] titlu;
+        }
+    }
+
+    Bilet& operator=(const Bilet& b)
+    {
+        idBilet = b.idBilet;
+        if (titlu != nullptr) {
+            delete[] titlu;
+            titlu = nullptr;
+        }
+        if (b.titlu != nullptr) {
+            titlu = new char[strlen(b.titlu) + 1];
+            for (int i = 0; i < strlen(b.titlu) + 1; i++)
+                titlu[i] = b.titlu[i];
+        }
+        else titlu = nullptr;
+        return *this;
+    }
+
+    char* getTitlu() {
+        if (titlu != nullptr) {
+            char* copie = new char[strlen(titlu) + 1];
+            for (int i = 0; i < strlen(titlu) + 1; i++)
+                copie[i] = titlu[i];
+            return copie;
+        }
+        else return nullptr;
+        //   return this->titlu;
+    }
+
+    void setTitlu(const char* titlu) {
+        if (this->titlu)
+            delete[] this->titlu;
+        //       if (this->titlu != nullptr) {
+        this->titlu = new char[strlen(titlu) + 1];
+        for (int i = 0; i < strlen(titlu) + 1; i++)
+            this->titlu[i] = titlu[i];
+    }
+
+    int getIdBilet() {
+        return idBilet;
+    }
+    void setIdBilet(int id) {
+        this->idBilet = id;
+    }
+
+    friend istream& operator>>(istream&, Bilet&);
+    friend ostream& operator<<(ostream&, Bilet);
+    friend ifstream& operator>>(ifstream&, Bilet&);
+    friend ofstream& operator<<(ofstream&, Bilet);
 };
 
+istream& operator>>(istream& in, Bilet& b) {
+    cout << "Titlu: ";
+    char titlu[40]; //variabila temporara in care citim titlul de la tastatura
+    in.getline(titlu, 40); // citire cu spatii libere
+    b.setTitlu(titlu);
+    cout << "ID Bilet: ";
+    int id;
+    in >> id;
+    b.setIdBilet(id);
+    return in;
+}
 
+ostream& operator<<(ostream& out, Bilet b) {
+    out << "Filmul " << b.getTitlu() << ", biletul avand seria " << b.getIdBilet() << endl;
+    return out;
+}
+
+ifstream& operator>>(ifstream& f, Bilet& b)
+{
+    f.open("bilet.txt", ios::in | ios::_Nocreate);
+    if (f)
+    {
+        char t[40];
+        f >> t;
+        b.setTitlu(t);
+        int id;
+        f >> id;
+        b.setIdBilet(id);
+    }
+    f.close();
+    return f;
+}
+
+ofstream& operator<<(ofstream& f, Bilet b)
+{
+    f.open("afisare.txt", ios::out);
+    if (f)
+    {
+        f << "Titlu: " << b.titlu << endl;
+        f << "Serie bilet: " << b.idBilet << endl;
+    }
+    f.close();
+    return f;
+}
 
 
 class Discount {
@@ -510,64 +628,66 @@ class Discount {
 };
 
 int main() {
-/*
-       char test[] = { 't' };
-       Film f1(test, "test", "test", 0);
-       f1.setTitlu("Interstellar");
-       f1.setRegizor("Christopher Nolan");
-       f1.setTara("UK");
-       f1.setAn(2014);
-
-       cout << f1.getTitlu() << endl;
-       cout << f1.getRegizor() << endl;
-       cout << f1.getTara() << endl;
-       cout << f1.getAn() << endl;
-
-       Film f2;
-       cin >> f2;
-       cout << f2;
-
-       cout << f1[0];
-       DesenAnimat d1;
-       DesenAnimat d2(test, "Anonim", "USA", 2017, "Nu");
-       d2.setTitlu("Frozen");
-       cout << d2.getTitlu() << endl;
-       DesenAnimat d3;
-       cin >> d3;
-       cout << d3;
-
-       Program p1;
-       cin >> p1;
-       cout << p1;*/
+    /*
+           char test[] = { 't' };
+           Film f1(test, "test", "test", 0);
+           f1.setTitlu("Interstellar");
+           f1.setRegizor("Christopher Nolan");
+           f1.setTara("UK");
+           f1.setAn(2014);
+           cout << f1.getTitlu() << endl;
+           cout << f1.getRegizor() << endl;
+           cout << f1.getTara() << endl;
+           cout << f1.getAn() << endl;
+           Film f2;
+           cin >> f2;
+           cout << f2;
+           cout << f1[0];
+           DesenAnimat d1;
+           DesenAnimat d2(test, "Anonim", "USA", 2017, "Nu");
+           d2.setTitlu("Frozen");
+           cout << d2.getTitlu() << endl;
+           DesenAnimat d3;
+           cin >> d3;
+           cout << d3;
+           Program p1;
+           cin >> p1;
+           cout << p1;*/
     system("Color E0");
-    int x;
-    f.getNrFilm();
-    do {
-        cout << "1. Adauga film" << endl; // afisare filme disponibile numerotate
-  //      cout << "2. Situatie locuri libere" << endl; //la fiecare apelare: --locuriLibere ->afiseaza locuri libere
-        cout << "2. Afiseaza filme existente" << endl; 
-        cout << "3. Valideaza film" << endl;
-        cout << "4. Iesire" << endl;
-        cout << "Alege o optiune: " << endl;
-        cin >> x;
-        switch (x) {
-        case 1: f.getDate(); break;
-        case 2: f.citireDate(); break;
-        case 3: f.validareFilm(); break;
-        case 4: exit(0); break;
-        default: cout << "\n Optiune invalida.\n Alege din nou" << endl;
-        }
+  //  int x;
+  //  f.getNrFilm();
+  //  do {
+  //      cout << "1. Adauga film" << endl; // afisare filme disponibile numerotate
+  ////      cout << "2. Situatie locuri libere" << endl; //la fiecare apelare: --locuriLibere ->afiseaza locuri libere
+  //      cout << "2. Afiseaza filme existente" << endl;
+  //      cout << "3. Valideaza film" << endl;
+  //      cout << "4. Iesire" << endl;
+  //      cout << "Alege o optiune: " << endl;
+  //      cin >> x;
+  //      switch (x) {
+  //      case 1: f.getDate(); break;
+  //      case 2: f.citireDate(); break;
+  //      case 3: f.validareFilm(); break;
+  //      case 4: exit(0); break;
+  //      default: cout << "\n Optiune invalida.\n Alege din nou" << endl;
+  //      }
 
-    } while (x != 4);
- /*   Film f2;
-    cin >> f2;
-    cout << f2;
+  //  } while (x != 4);
+       //Film f2;
+       //cin >> f2;
+       //cout << f2;
+       //ifstream f;
+       //f >> f2;
+       //ofstream x;
+       //x << f2;
+       //// scrierea in txt functioneaza, dar datele se salveaza peste cele existente :(
+       //// de facut asta in clasa Bilet, pentru emiterea unui bilet in txt;
+
+    Bilet b1;
+    cin >> b1;
+    cout << b1;
     ifstream f;
-    f >> f2;
+    f >> b1;
     ofstream x;
-    x << f2;
-    // scrierea in txt functioneaza, dar datele se salveaza peste cele existente :(
-    // de facut asta in clasa Bilet, pentru emiterea unui bilet in txt
-    f2.scriereFilmFisier();
-    Film::citireFilmFisier();*/
- }
+    x << b1;
+}
